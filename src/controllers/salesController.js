@@ -26,7 +26,7 @@ const getSalesById = async (req, res) => {
     const { id } = req.params;
     const { data } = await salesService.getSalesById(id);
 
-    if (!sale) {
+    if (!data) {
       const error = new Error("Sale not found");
       error.status = 404;
       throw error;
