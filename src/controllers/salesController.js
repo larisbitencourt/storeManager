@@ -7,9 +7,9 @@ const saveSales = async (req, res) => {
     const sales = await salesService.saveSales(itensSold);
     return res.status(statusHTTP("SUCCESS")).json(sales);
   } catch (error) {
-    return res.status(statusHTTP("INVALID_DATA")).json({
+    return res.status(error.status || statusHTTP("INVALID_DATA")).json({
       err: {
-        code: "invalid_data",
+        code: error.code || "invalid_data",
         message: error.message,
       },
     });

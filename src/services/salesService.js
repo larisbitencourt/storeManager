@@ -9,9 +9,18 @@ const saveSales = async (itensSold) => {
 
   for (const item of itensSold) {
     const productExists = await productsModel.findById(item.productId);
+
     if (!productExists) {
       throw new Error(`Product ${item.productId} not found`);
     }
+
+    if (productExists.quantity < item.quantity) {
+      const error = new Error("Such amount is not permitted to sell");
+      error.code = "stock_problem";
+      error.status = 404;
+      throw error;
+    }
+
     await productsModel.findByIdAndUpdate(item.productId, {
       $inc: { quantity: -item.quantity },
     });
