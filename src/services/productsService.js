@@ -15,4 +15,17 @@ const saveProducts = async ({ name, quantity }) => {
  
 };
 
-module.exports = { saveProducts };
+const getAll = async () => {
+  const products = await productsModel.find();
+  return { status: "SUCCESSFUL", data: products };
+};
+
+const getById = async (id) => {
+   const product = await productsModel.findById(id);
+  if (!product) {
+    return { status: "INVALID_DATA", data: { message: "Product not exists" } };
+  }
+  return { status: "SUCCESSFUL", data: product };
+};
+
+module.exports = { saveProducts, getAll, getById };

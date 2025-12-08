@@ -9,19 +9,40 @@ const saveProducts = async (req, res) => {
   } catch (error) {
     if (error.message === "Product already exists") {
       return res
-        .status(statusHTTP("INVALID_DATA")) 
+        .status(statusHTTP("INVALID_DATA"))
         .json({ err: { message: error.message, code: "invalid_data" } });
     }
 
-    return res
-      .status(statusHTTP("INVALID_DATA"))
-      .json({
-        err: {
-          message: error.message || "Dados inválidos",
-          code: "invalid_data",
-        },
-      });
+    return res.status(statusHTTP("INVALID_DATA")).json({
+      err: {
+        message: error.message || "Dados inválidos",
+        code: "invalid_data",
+      },
+    });
   }
 };
 
-module.exports = { saveProducts };
+const getAll = async (req, res) => {
+  const { data } = await productsService.getAll();
+  console.log('SERVICE RETORNO:', await productsService.getAll());
+
+  return res.status(statusHTTP("SUCCESS")).json({products: data});
+};
+
+const getById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data } = await productsService.getById(id);
+
+    return res.status(statusHTTP("SUCCESS")).json(data);
+  } catch (error) {
+    return res.status(statusHTTP("INVALID_DATA")).json({
+      err: {
+        code: "invalid_data",
+        message: "Wrong id format",
+      },
+    });
+  }
+};
+
+module.exports = { saveProducts, getAll, getById };
