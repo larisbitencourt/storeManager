@@ -24,9 +24,7 @@ const saveProducts = async (req, res) => {
 
 const getAll = async (req, res) => {
   const { data } = await productsService.getAll();
-  console.log('SERVICE RETORNO:', await productsService.getAll());
-
-  return res.status(statusHTTP("SUCCESS")).json({products: data});
+  return res.status(statusHTTP("SUCCESS")).json({ products: data });
 };
 
 const getById = async (req, res) => {
@@ -45,4 +43,21 @@ const getById = async (req, res) => {
   }
 };
 
-module.exports = { saveProducts, getAll, getById };
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data } = await productsService.updateProduct(id, req.body);
+    
+
+    return res.status(statusHTTP("SUCCESS")).json(data);
+  } catch (error) {
+    return res.status(statusHTTP("INVALID_DATA")).json({
+      err: {
+        code: "invalid_data",
+        message: error.message,
+      },
+    });
+  }
+};
+
+module.exports = { saveProducts, getAll, getById, updateProduct };
