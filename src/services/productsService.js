@@ -1,4 +1,6 @@
 const { productsModel } = require("../models");
+const mongoose = require('mongoose');
+
 const {
   saveProductsSchema,
   updateProductSchema,
@@ -40,10 +42,29 @@ const updateProduct = async (id, { name, quantity }) => {
   );
 
   if (!product) {
-     throw new Error("Produto não encontrado");
+    throw new Error("Produto não encontrado");
   }
 
   return { status: "SUCCESS", data: product };
 };
 
-module.exports = { saveProducts, getAll, getById, updateProduct };
+const deleteProduct = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error("Wrong id format");
+  }
+  const product = await productsModel.findByIdAndDelete(id);
+
+  if (!product) {
+    throw new Error("Product not exists");
+  }
+
+  return { status: "SUCCESS", message: "Product deleted" };
+};
+
+module.exports = {
+  saveProducts,
+  getAll,
+  getById,
+  updateProduct,
+  deleteProduct,
+};
