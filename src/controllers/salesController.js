@@ -3,7 +3,7 @@ const { salesService } = require("../services");
 
 const saveSales = async (req, res) => {
   try {
-    const itensSold  = req.body;
+    const itensSold = req.body;
     const sales = await salesService.saveSales(itensSold);
     return res.status(statusHTTP("SUCCESS")).json(sales);
   } catch (error) {
@@ -26,6 +26,12 @@ const getSalesById = async (req, res) => {
     const { id } = req.params;
     const { data } = await salesService.getSalesById(id);
 
+    if (!sale) {
+      const error = new Error("Sale not found");
+      error.status = 404;
+      throw error;
+    }
+
     return res.status(statusHTTP("SUCCESS")).json(data);
   } catch (error) {
     return res.status(statusHTTP("NOT_FOUND")).json({
@@ -41,7 +47,7 @@ const updateSale = async (req, res) => {
   try {
     const { id } = req.params;
     const { data } = await salesService.updateSale(id, req.body);
-    
+
     return res.status(statusHTTP("SUCCESS")).json(data);
   } catch (error) {
     return res.status(statusHTTP("INVALID_DATA")).json({
@@ -53,28 +59,26 @@ const updateSale = async (req, res) => {
   }
 };
 
-// const deleteProduct = async (req, res) => {
-//     try {
-//     const { id } = req.params;
-//     const { message } = await productsService.deleteProduct(id);
-    
+const deleteSale = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await salesService.deleteSale(id);
 
-//     return res.status(statusHTTP("SUCCESS")).json(message);
-//   } catch (error) {
-//     return res.status(statusHTTP("INVALID_DATA")).json({
-//       err: {
-//         code: "invalid_data",
-//         message: error.message,
-//       },
-//     });
-//   }
-
-// };
-
-module.exports = { 
-    saveSales, 
-    getAllSales,
-    getSalesById,
-    updateSale,
+    return res.status(statusHTTP("SUCCESS")).end();
+  } catch (error) {
+    return res.status(error.status || statusHTTP("INVALID_DATA")).json({
+      err: {
+        code: "invalid_data",
+        message: error.message,
+      },
+    });
+  }
 };
 
+module.exports = {
+  saveSales,
+  getAllSales,
+  getSalesById,
+  updateSale,
+  deleteSale,
+};

@@ -10,7 +10,7 @@ router.get('/:id', salesController.getSalesById);
 
 router.put('/:id', salesController.updateSale);
 
-// router.delete('/products/:id', salesController.deleteProduct);
+router.delete('/:id', salesController.deleteSale);
 
 
 
