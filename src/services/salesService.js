@@ -20,18 +20,18 @@ const saveSales = async (itensSold) => {
   return sales;
 };
 
-// const getAll = async () => {
-//   const products = await productsModel.find();
-//   return { status: "SUCCESSFUL", data: products };
-// };
+const getAllSales = async () => {
+  const sales = await salesModel.find();
+  return { status: "SUCCESSFUL", data: sales };
+};
 
-// const getById = async (id) => {
-//   const product = await productsModel.findById(id);
-//   if (!product) {
-//     return { status: "INVALID_DATA", data: { message: "Product not exists" } };
-//   }
-//   return { status: "SUCCESSFUL", data: product };
-// };
+const getSalesById = async (id) => {
+  const sale = await salesModel.findById(id);
+  if (!sale) {
+    return { status: "NOT_FOUND", data: { message: "Sales not found" } };
+  }
+  return { status: "SUCCESS", data: sale };
+};
 
 // const updateProduct = async (id, { name, quantity }) => {
 //   const { error } = updateProductSchema.validate({ name, quantity });
@@ -65,5 +65,7 @@ const saveSales = async (itensSold) => {
 
 module.exports = {
   saveSales,
+  getAllSales,
+  getSalesById,
 
 };

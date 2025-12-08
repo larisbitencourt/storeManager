@@ -19,7 +19,7 @@ const saveProducts = async ({ name, quantity }) => {
 
 const getAll = async () => {
   const products = await productsModel.find();
-  return { status: "SUCCESSFUL", data: products };
+  return { status: "SUCCESS", data: products };
 };
 
 const getById = async (id) => {
@@ -27,7 +27,7 @@ const getById = async (id) => {
   if (!product) {
     return { status: "INVALID_DATA", data: { message: "Product not exists" } };
   }
-  return { status: "SUCCESSFUL", data: product };
+  return { status: "SUCCESS", data: product };
 };
 
 const updateProduct = async (id, { name, quantity }) => {

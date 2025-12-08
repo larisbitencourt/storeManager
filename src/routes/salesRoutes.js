@@ -4,9 +4,9 @@ const salesController = require('../controllers/salesController');
 
 router.post('/', salesController.saveSales);
 
-// router.get('/products/', salesController.getAll);
+router.get('/', salesController.getAllSales);
 
-// router.get('/products/:id', salesController.getById);
+router.get('/:id', salesController.getSalesById);
 
 // router.put('/products/:id', salesController.updateProduct);
 

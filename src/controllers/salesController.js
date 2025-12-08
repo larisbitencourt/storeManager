@@ -16,26 +16,26 @@ const saveSales = async (req, res) => {
   }
 };
 
-// const getAll = async (req, res) => {
-//   const { data } = await productsService.getAll();
-//   return res.status(statusHTTP("SUCCESS")).json({ products: data });
-// };
+const getAllSales = async (req, res) => {
+  const { data } = await salesService.getAllSales();
+  return res.status(statusHTTP("SUCCESS")).json({ sales: data });
+};
 
-// const getById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { data } = await productsService.getById(id);
+const getSalesById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data } = await salesService.getSalesById(id);
 
-//     return res.status(statusHTTP("SUCCESS")).json(data);
-//   } catch (error) {
-//     return res.status(statusHTTP("INVALID_DATA")).json({
-//       err: {
-//         code: "invalid_data",
-//         message: "Wrong id format",
-//       },
-//     });
-//   }
-// };
+    return res.status(statusHTTP("SUCCESS")).json(data);
+  } catch (error) {
+    return res.status(statusHTTP("NOT_FOUND")).json({
+      err: {
+        code: "not_found",
+        message: "Sale not found",
+      },
+    });
+  }
+};
 
 // const updateProduct = async (req, res) => {
 //   try {
@@ -72,5 +72,9 @@ const saveSales = async (req, res) => {
 
 // };
 
-module.exports = { saveSales, };
+module.exports = { 
+    saveSales, 
+    getAllSales,
+    getSalesById,
+};
 
