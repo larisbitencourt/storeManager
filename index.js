@@ -1,11 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const routes = require("./src/routes/routes");
+const productsRoutes = require("./src/routes/productsRoutes");
+const salesRoutes = require('./src/routes/salesRoutes');
 
 const app = express();
 
 app.use(express.json());
-app.use(routes);
+app.use('/products', productsRoutes);
+app.use('/sales', salesRoutes);
 
 const MONGO_DB_URL = "mongodb://localhost:27017/StoreManager";
 const DB_NAME = "StoreManager";
