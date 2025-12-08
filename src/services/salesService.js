@@ -33,22 +33,22 @@ const getSalesById = async (id) => {
   return { status: "SUCCESS", data: sale };
 };
 
-// const updateProduct = async (id, { name, quantity }) => {
-//   const { error } = updateProductSchema.validate({ name, quantity });
-//   if (error) throw new Error(error.message);
+const updateSale = async (id, itensSold) => {
+  const { error } = saveSalesSchema.validate(itensSold);
+  if (error) throw new Error(error.message);
 
-//   const product = await productsModel.findByIdAndUpdate(
-//     id,
-//     { name, quantity },
-//     { new: true }
-//   );
+  const sale = await salesModel.findByIdAndUpdate(
+    id,
+    { itensSold },
+    { new: true }
+  );
 
-//   if (!product) {
-//     throw new Error("Produto não encontrado");
-//   }
+  if (!sale) {
+    throw new Error("Produto não encontrado");
+  }
 
-//   return { status: "SUCCESS", data: product };
-// };
+  return { status: "SUCCESS", data: sale };
+};
 
 // const deleteProduct = async (id) => {
 //   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -67,5 +67,6 @@ module.exports = {
   saveSales,
   getAllSales,
   getSalesById,
+  updateSale,
 
 };
