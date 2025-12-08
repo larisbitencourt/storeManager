@@ -1,22 +1,20 @@
 const { salesModel, productsModel } = require("../models");
+const mongoose = require("mongoose");
 
-const {
-  saveSalesSchema,
-} = require("./validations/schema");
+const { saveSalesSchema } = require("./validations/schema");
 
 const saveSales = async (itensSold) => {
   const { error } = saveSalesSchema.validate(itensSold);
   if (error) throw new Error(error.message);
 
   for (const item of itensSold) {
-  const productExists = await productsModel.findById(item.productId);
-  if (!productExists) {
-    throw new Error(`Product ${item.productId} not found`);
+    const productExists = await productsModel.findById(item.productId);
+    if (!productExists) {
+      throw new Error(`Product ${item.productId} not found`);
+    }
   }
-}
 
-
-  const sales = await salesModel.create({itensSold});
+  const sales = await salesModel.create({ itensSold });
   return sales;
 };
 
@@ -50,23 +48,25 @@ const updateSale = async (id, itensSold) => {
   return { status: "SUCCESS", data: sale };
 };
 
-// const deleteProduct = async (id) => {
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     throw new Error("Wrong id format");
-//   }
-//   const product = await productsModel.findByIdAndDelete(id);
+const deleteSale = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error("Wrong sale ID format");
+  }
 
-//   if (!product) {
-//     throw new Error("Product not exists");
-//   }
+  const sale = await salesModel.findByIdAndDelete(id);
 
-//   return { status: "SUCCESS", message: "Product deleted" };
-// };
+  if (!sale) {
+    const error = new Error("Sale not found");
+    error.status = 404; 
+    throw error;
+  }
+  
+};
 
 module.exports = {
   saveSales,
   getAllSales,
   getSalesById,
   updateSale,
-
+  deleteSale,
 };
