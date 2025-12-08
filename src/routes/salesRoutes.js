@@ -8,7 +8,7 @@ router.get('/', salesController.getAllSales);
 
 router.get('/:id', salesController.getSalesById);
 
-// router.put('/products/:id', salesController.updateProduct);
+router.put('/:id', salesController.updateSale);
 
 // router.delete('/products/:id', salesController.deleteProduct);
 

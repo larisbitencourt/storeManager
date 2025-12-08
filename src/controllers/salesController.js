@@ -37,22 +37,21 @@ const getSalesById = async (req, res) => {
   }
 };
 
-// const updateProduct = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { data } = await productsService.updateProduct(id, req.body);
+const updateSale = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data } = await salesService.updateSale(id, req.body);
     
-
-//     return res.status(statusHTTP("SUCCESS")).json(data);
-//   } catch (error) {
-//     return res.status(statusHTTP("INVALID_DATA")).json({
-//       err: {
-//         code: "invalid_data",
-//         message: error.message,
-//       },
-//     });
-//   }
-// };
+    return res.status(statusHTTP("SUCCESS")).json(data);
+  } catch (error) {
+    return res.status(statusHTTP("INVALID_DATA")).json({
+      err: {
+        code: "invalid_data",
+        message: error.message,
+      },
+    });
+  }
+};
 
 // const deleteProduct = async (req, res) => {
 //     try {
@@ -76,5 +75,6 @@ module.exports = {
     saveSales, 
     getAllSales,
     getSalesById,
+    updateSale,
 };
 
