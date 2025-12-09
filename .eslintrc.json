@@ -1,0 +1,17 @@
+{
+  "env": {
+    "es2021": true,
+    "node": true,
+    "mocha": true
+  },
+  "extends": "airbnb-base",
+  "plugins": ["sonarjs"],
+  "rules": {
+    "camelcase": "off",
+    "sonarjs/no-duplicate-string": "off",
+    "max-lines-per-function": "off",
+    "no-unused-vars": "off",
+    "class-methods-use-this": "off",
+    "no-underscore-dangle": "off"
+  }
+}

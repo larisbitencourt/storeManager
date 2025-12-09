@@ -1,30 +1,32 @@
-const { salesModel, productsModel } = require("../models");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const { salesModel, productsModel } = require('../models');
 
-const { saveSalesSchema } = require("./validations/schema");
+const { saveSalesSchema } = require('./validations/schema');
 
 const saveSales = async (itensSold) => {
   const { error } = saveSalesSchema.validate(itensSold);
   if (error) throw new Error(error.message);
 
-  for (const item of itensSold) {
-    const productExists = await productsModel.findById(item.productId);
+  await Promise.all(
+    itensSold.map(async (item) => {
+      const productExists = await productsModel.findById(item.productId);
 
-    if (!productExists) {
-      throw new Error(`Product ${item.productId} not found`);
-    }
+      if (!productExists) {
+        throw new Error(`Product ${item.productId} not found`);
+      }
 
-    if (productExists.quantity < item.quantity) {
-      const error = new Error("Such amount is not permitted to sell");
-      error.code = "stock_problem";
-      error.status = 404;
-      throw error;
-    }
+      if (productExists.quantity < item.quantity) {
+        const err = new Error('Such amount is not permitted to sell');
+        err.code = 'stock_problem';
+        err.status = 404;
+        throw err;
+      }
 
-    await productsModel.findByIdAndUpdate(item.productId, {
-      $inc: { quantity: -item.quantity },
-    });
-  }
+      await productsModel.findByIdAndUpdate(item.productId, {
+        $inc: { quantity: -item.quantity },
+      });
+    }),
+  );
 
   const sales = await salesModel.create({ itensSold });
   return sales;
@@ -32,17 +34,17 @@ const saveSales = async (itensSold) => {
 
 const getAllSales = async () => {
   const sales = await salesModel.find();
-  return { status: "SUCCESSFUL", data: sales };
+  return { status: 'SUCCESSFUL', data: sales };
 };
 
 const getSalesById = async (id) => {
   const sale = await salesModel.findById(id);
   if (!sale) {
-    const error = new Error("Sale not found");
+    const error = new Error('Sale not found');
     error.status = 404;
     throw error;
   }
-  return { status: "SUCCESS", data: sale };
+  return { status: 'SUCCESS', data: sale };
 };
 
 const updateSale = async (id, itensSold) => {
@@ -50,56 +52,58 @@ const updateSale = async (id, itensSold) => {
   if (error) throw new Error(error.message);
 
   const saleOld = await salesModel.findById(id);
-  if (!saleOld) throw new Error("Produto não encontrado");
+  if (!saleOld) throw new Error('Produto não encontrado');
 
-  for (const item of saleOld.itensSold) {
-    await productsModel.findByIdAndUpdate(item.productId, {
+  await Promise.all(
+    saleOld.itensSold.map((item) => productsModel.findByIdAndUpdate(item.productId, {
       $inc: { quantity: item.quantity },
-    });
-  }
+    })),
+  );
 
-  for (const item of itensSold) {
-    const product = await productsModel.findById(item.productId);
-    if (!product) throw new Error(`Product ${item.productId} not found`);
-    if (product.quantity < item.quantity) throw new Error("Not enough stock");
+  await Promise.all(
+    itensSold.map(async (item) => {
+      const product = await productsModel.findById(item.productId);
+      if (!product) throw new Error(`Product ${item.productId} not found`);
+      if (product.quantity < item.quantity) throw new Error('Not enough stock');
 
-    await productsModel.findByIdAndUpdate(item.productId, {
-      $inc: { quantity: -item.quantity },
-    });
-  }
+      await productsModel.findByIdAndUpdate(item.productId, {
+        $inc: { quantity: -item.quantity },
+      });
+    }),
+  );
 
   const sale = await salesModel.findByIdAndUpdate(
     id,
     { itensSold },
-    { new: true }
+    { new: true },
   );
 
   if (!sale) {
-    throw new Error("Produto não encontrado");
+    throw new Error('Produto não encontrado');
   }
 
-  return { status: "SUCCESS", data: sale };
+  return { status: 'SUCCESS', data: sale };
 };
 
 const deleteSale = async (id) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("Wrong sale ID format");
+    throw new Error('Wrong sale ID format');
   }
 
   const sale = await salesModel.findById(id);
 
   if (!sale) {
-    const error = new Error("Sale not found");
+    const error = new Error('Sale not found');
     error.status = 404;
     throw error;
   }
 
-  for (const item of sale.itensSold || []) {
-    await productsModel.updateOne(
+  await Promise.all(
+    (sale.itensSold || []).map((item) => productsModel.updateOne(
       { _id: item.productId },
-      { $inc: { quantity: item.quantity } }
-    );
-  }
+      { $inc: { quantity: item.quantity } },
+    )),
+  );
 
   await salesModel.findByIdAndDelete(id);
 };
