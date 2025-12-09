@@ -1,17 +1,17 @@
-const { productsModel } = require("../models");
 const mongoose = require('mongoose');
+const { productsModel } = require('../models');
 
 const {
   saveProductsSchema,
   updateProductSchema,
-} = require("./validations/schema");
+} = require('./validations/schema');
 
 const saveProducts = async ({ name, quantity }) => {
   const { error } = saveProductsSchema.validate({ name, quantity });
   if (error) throw new Error(error.message);
 
   const existingProduct = await productsModel.findOne({ name });
-  if (existingProduct) throw new Error("Product already exists");
+  if (existingProduct) throw new Error('Product already exists');
 
   const product = await productsModel.create({ name, quantity });
   return product;
@@ -19,15 +19,15 @@ const saveProducts = async ({ name, quantity }) => {
 
 const getAll = async () => {
   const products = await productsModel.find();
-  return { status: "SUCCESS", data: products };
+  return { status: 'SUCCESS', data: products };
 };
 
 const getById = async (id) => {
   const product = await productsModel.findById(id);
   if (!product) {
-    return { status: "INVALID_DATA", data: { message: "Product not exists" } };
+    return { status: 'INVALID_DATA', data: { message: 'Product not exists' } };
   }
-  return { status: "SUCCESS", data: product };
+  return { status: 'SUCCESS', data: product };
 };
 
 const updateProduct = async (id, { name, quantity }) => {
@@ -37,27 +37,27 @@ const updateProduct = async (id, { name, quantity }) => {
   const product = await productsModel.findByIdAndUpdate(
     id,
     { name, quantity },
-    { new: true }
+    { new: true },
   );
 
   if (!product) {
-    throw new Error("Produto não encontrado");
+    throw new Error('Produto não encontrado');
   }
 
-  return { status: "SUCCESS", data: product };
+  return { status: 'SUCCESS', data: product };
 };
 
 const deleteProduct = async (id) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("Wrong id format");
+    throw new Error('Wrong id format');
   }
   const product = await productsModel.findByIdAndDelete(id);
 
   if (!product) {
-    throw new Error("Product not exists");
+    throw new Error('Product not exists');
   }
 
-  return { status: "SUCCESS", message: "Product deleted" };
+  return { status: 'SUCCESS', message: 'Product deleted' };
 };
 
 module.exports = {

@@ -7,8 +7,7 @@ const exec = util.promisify(callbackExec);
 
 const mongoDbUrl = 'mongodb://localhost:27017';
 const url = 'http://localhost:3000';
-const NPX_NYC_COMMAND =
-  (unit) => `npx nyc --all --include ${unit} --reporter json-summary mocha test/unit/${unit}.js --exit`;
+const NPX_NYC_COMMAND = (unit) => `npx nyc --all --include ${unit} --reporter json-summary mocha test/unit/${unit}.js --exit`;
 
 function readCoverageFile() {
   const COVERAGE_FILE_PATH = path.join(__dirname, '..', 'coverage', 'coverage-summary.json');
@@ -45,7 +44,7 @@ describe.skip('12 - Escreva testes para seus services', () => {
   });
 });
 
-describe.skip('13 - Escreva testes para seus controllers', () => {
+describe('13 - Escreva testes para seus controllers', () => {
   beforeAll(async () => {
     await exec(NPX_NYC_COMMAND('controllers'));
   });

@@ -1,4 +1,3 @@
-
 const httpErrorMap = {
   SUCCESS: 200,
   CREATED: 201,
